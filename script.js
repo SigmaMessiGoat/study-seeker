@@ -6,7 +6,7 @@ const fileInput = document.getElementById("file-input");
 const chatbotToggler = document.getElementById("chatbot-toggler");
 const closeChatbot = document.getElementById("close-chatbot");
 
-const API_KEY = "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";
+const API_KEY = "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";
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 let chatHistory = [];
