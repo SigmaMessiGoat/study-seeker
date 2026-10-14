@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reset Study Seeker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <section class="panel">
+        <h1>Reset Study Seeker</h1>
+        <p>Opening Study Seeker to clear saved quests, flashcards, XP, timer, and preferences.</p>
+        <a href="index.html#reset-storage">Continue to reset</a>
+      </section>
+    </main>
+    <script>
+      // Reset on index.html itself, including browsers that isolate file-URL storage.
+      window.location.replace("index.html#reset-storage");
+    </script>
+  </body>
+</html>

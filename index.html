@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Seeker</title>
+    <link rel="icon" type="image/svg+xml" href="study-seeker-logo.svg" />
+    <!-- Resolve the saved/system theme before first paint so there is no flash. -->
+    <script>
+      (function () {
+        // An explicit reset link clears this app before any saved state is loaded.
+        if (window.location.hash === "#reset-storage") {
+          try {
+            ["simple-quest-log", "quest-log-theme", "study-seeker-sound", "study-seeker-practice-timer"].forEach(function (key) {
+              localStorage.removeItem(key);
+            });
+            history.replaceState(null, "", window.location.pathname + window.location.search);
+          } catch (e) {
+            window.alert("Browser storage could not be reset. Check your browser's site settings.");
+          }
+        }
+        try {
+          var saved = localStorage.getItem("quest-log-theme");
+          var theme = saved === "light" || saved === "dark"
+            ? saved
+            : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+    <!-- Stylesheets for Quest Log & Chatbot -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0" />
+  </head>
+  <body>
+    <!-- Quest Log Header -->
+    <header class="top">
+      <div class="top-inner">
+        <div class="brand">
+          <img class="brand-mark" src="study-seeker-logo.svg" alt="" width="44" height="44" />
+          <div><h1>Study Seeker</h1>
+          <p class="subtitle">Study dashboard</p></div>
+        </div>
+        <div class="stats">
+          <button type="button" id="reset-app" class="ghost small">Reset data</button>
+          <button type="button" id="sound-toggle" class="ghost small" aria-pressed="true">Sound on</button>
+          <div class="level-widget"><span class="stat">Level <strong id="level">1</strong></span><div class="level-meter"><label for="level-progress" id="level-progress-text">0/50 XP to level 2</label><progress id="level-progress" max="50" value="0" aria-labelledby="level-progress-text"></progress></div></div>
+          <span class="stat"><strong id="xp">0</strong> XP</span>
+          <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch theme">
+            <span class="material-symbols-outlined" id="theme-icon" aria-hidden="true">dark_mode</span>
+            <span class="theme-label" id="theme-label">Dark</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Quest Log Content -->
+    <main>
+      <div class="page-intro">
+        <p class="eyebrow">YOUR STUDY SPACE</p>
+        <h2>Small steps. Real progress.</h2>
+        <p>Make time to focus, keep learning, and move your quests forward.</p>
+      </div>
+      <nav class="study-tabs" role="tablist" aria-label="Study workspace">
+        <button type="button" role="tab" id="tab-dashboard" aria-controls="dashboard-panel" aria-selected="true" data-study-tab="dashboard">Dashboard</button>
+        <button type="button" role="tab" id="tab-quests" aria-controls="quests-panel" aria-selected="false" tabindex="-1" data-study-tab="quests">Quests</button>
+        <button type="button" role="tab" id="tab-flashcards" aria-controls="flashcard-dialog" aria-selected="false" tabindex="-1" data-study-tab="flashcards">Flashcards</button>
+        <button type="button" role="tab" id="tab-papers" aria-controls="practice-dialog" aria-selected="false" tabindex="-1" data-study-tab="papers">Past Papers</button>
+        <button type="button" role="tab" id="tab-notes" aria-controls="notes-panel" aria-selected="false" tabindex="-1" data-study-tab="notes">Notes</button>
+      </nav>
+      <div id="dashboard-panel" role="tabpanel" aria-labelledby="tab-dashboard">
+      <div class="dashboard-overview">
+      <!-- Weekly goal (flexible consistency metric — no harsh streaks) -->
+      <section class="panel goal-panel">
+        <div class="panel-head">
+          <h2>This week's goal</h2>
+          <label class="target-pick">
+            Goal
+            <select id="target-days" aria-label="Study days per week">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5" selected>5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+            days / week
+          </label>
+        </div>
+
+        <p class="goal-count">
+          <strong id="goal-done">0</strong> / <span id="goal-total">5</span> days completed
+          <span id="goal-badge" class="goal-badge" hidden>Goal complete ✓</span>
+        </p>
+
+        <div class="bar"><div class="bar-fill" id="goal-bar"></div></div>
+
+        <div class="week" id="week-chips"></div>
+
+        <p class="grace-note">
+          ❄ <strong id="grace-left">2</strong> grace days left this month —
+          click a missed day to cover it, no streak reset.
+        </p>
+      </section>
+
+      <!-- Monthly contribution grid -->
+      <section class="panel activity-panel">
+        <div class="panel-head">
+          <h2>Monthly activity</h2>
+          <p class="hint" id="month-summary"></p>
+        </div>
+        <div class="heatmap" id="heatmap" aria-label="Monthly activity grid"></div>
+        <div class="legend">
+          <span>Less</span>
+          <i class="cell l0"></i>
+          <i class="cell l1"></i>
+          <i class="cell l2"></i>
+          <i class="cell l3"></i>
+          <i class="cell l4"></i>
+          <span>More</span>
+          <span class="legend-gap"></span>
+          <i class="cell grace"></i>
+          <span>grace day</span>
+        </div>
+      </section>
+
+      </div>
+
+      <!-- Pre-set action templates with zero-manual-friction completion -->
+      <section class="panel quick-panel">
+        <div class="panel-head">
+          <h2>Quick actions</h2>
+          <span class="hint">choose your session — completion updates your progress</span>
+        </div>
+
+        <div class="actions-grid">
+          <div class="action" id="action-focus">
+            <span class="action-icon">⏱️</span>
+            <h3>Focus session</h3>
+            <label class="control-label">Minutes <input id="focus-minutes" type="number" min="1" max="240" value="25" required /></label>
+            <button type="button" class="btn" id="timer-btn">Start focus timer</button>
+            <p class="action-count" id="timer-count" hidden>25:00</p>
+            <button type="button" class="btn ghost small" id="timer-cancel" hidden>Cancel</button>
+            <button type="button" class="ghost small" id="focus-notifications">Enable notifications</button>
+            <button type="button" id="focus-notification-test" class="ghost small" disabled>Test alert</button>
+            <p class="hint" id="focus-notification-status" role="status"></p>
+            <div class="focus-completion" id="focus-completion" role="status" aria-live="polite" aria-atomic="true" hidden>
+              <strong>Focus session complete ✓</strong>
+              <p id="focus-completion-message"></p>
+              <button type="button" class="ghost small" id="dismiss-focus-completion">Got it</button>
+            </div>
+            <p class="action-done" hidden>✓ Daily Focus done today</p>
+          </div>
+
+          <div class="action" id="action-review">
+            <span class="action-icon">🎴</span>
+            <h3>Review your flashcards</h3>
+            <button type="button" class="btn" id="flashcard-btn">Review Flashcards</button>
+          </div>
+
+          <div class="action" id="action-practice">
+            <span class="action-icon">📝</span>
+            <h3>Complete practice questions</h3>
+            <button type="button" class="btn" id="practice-btn">Open practice PDF</button>
+          </div>
+        </div>
+      </section>
+
+      </div>
+      <section id="quests-panel" role="tabpanel" aria-labelledby="tab-quests" hidden>
+      <div class="quest-workspace">
+      <!-- Quest tracker -->
+      <form id="add-form" class="panel">
+        <label for="title">New task</label>
+        <div class="row">
+          <input id="title" type="text" maxlength="80" placeholder="e.g. Study maths, Clean room, Gym" required />
+          <button type="submit">Add quest</button>
+        </div>
+      </form>
+
+      <nav class="quest-subtabs" role="tablist" aria-label="Quest status">
+        <button type="button" role="tab" id="quest-tab-active" aria-controls="quest-active-panel" aria-selected="true" data-quest-tab="active">Active</button>
+        <button type="button" role="tab" id="quest-tab-completed" aria-controls="quest-completed-panel" aria-selected="false" tabindex="-1" data-quest-tab="completed">Completed</button>
+      </nav>
+      <section class="quest-section" id="quest-active-panel" role="tabpanel" aria-labelledby="quest-tab-active">
+        <h2 class="section-title">Active</h2>
+        <div id="active-list"></div>
+        <p id="active-empty" class="empty">No active quests. Add one above.</p>
+      </section>
+
+      <section class="quest-section completed-section" id="quest-completed-panel" role="tabpanel" aria-labelledby="quest-tab-completed" hidden>
+        <h2 class="section-title">Completed</h2>
+        <div id="done-list"></div>
+        <p id="done-empty" class="empty">Nothing completed yet.</p>
+      </section>
+      </div>
+      </section>
+
+    <section id="flashcard-dialog" class="panel study-panel" role="tabpanel" aria-labelledby="tab-flashcards" hidden>
+      <div class="panel-head"><h2 id="flashcard-heading">Your flashcards</h2><button type="button" class="ghost" id="close-flashcards">Back to dashboard</button></div>
+      <div id="deck-setup">
+        <label class="control-label">Save new cards into <input type="text" id="card-deck-name" value="General" maxlength="60" list="card-deck-names" aria-label="Deck for new flashcards" /><datalist id="card-deck-names"></datalist></label>
+        <div id="card-drop" class="drop-zone">Drop a .tsv, .txt or .json file here
+          <label class="control-label">Or choose a flashcard file <input id="card-file" type="file" accept=".tsv,.txt,.json" /></label>
+        </div>
+        <p class="hint">Text format: question, a tab, then answer — one card per line. Anki import text is supported; .apkg packages are not. JSON format: [{"front":"Question","back":"Answer"}].</p>
+        <form id="card-add-form" class="editor-form">
+          <label>Question <textarea id="card-front" maxlength="2000" required></textarea></label>
+          <label>Answer <textarea id="card-back" maxlength="5000" required></textarea></label>
+          <button type="submit">Add flashcard</button>
+        </form>
+        <p id="deck-summary" role="status"></p>
+        <p id="card-error" class="error" role="alert"></p>
+        <label class="control-label">Cards this session <input id="review-amount" type="number" min="1" max="500" value="10" required /></label>
+        <label class="control-label">Deck <select id="review-deck"><option value="">All decks</option></select></label>
+        <label class="control-label">Sort cards <select id="card-sort"><option value="due">Next review date</option><option value="question">Question A–Z</option></select></label>
+        <label class="control-label">Review selection <select id="review-mode"><option value="due">Due cards only</option><option value="all">All cards (extra practice)</option></select></label>
+        <button type="button" id="start-review">Start review</button>
+        <details><summary>Manage saved cards</summary><div id="card-library"></div></details>
+      </div>
+      <div id="review-session" hidden>
+        <p id="review-progress" role="status"></p><h3 id="review-front"></h3>
+        <div id="review-back" class="answer-box" hidden></div>
+        <div class="actions"><button type="button" id="reveal-answer">Reveal answer</button><button type="button" id="flashcard-ai" class="ghost">Ask AI for a hint</button></div>
+        <div id="review-ratings" class="actions" hidden>
+          <button type="button" data-rating="again" class="ghost">Again · tomorrow</button>
+          <button type="button" data-rating="good">Good</button>
+          <button type="button" data-rating="easy">Easy</button>
+        </div>
+        <p class="hint">Rate how well you recalled the answer. Each rating saves the next review date. Finish the selected batch to log your review time.</p>
+      </div>
+    </section>
+
+    <section id="practice-dialog" class="panel study-panel" role="tabpanel" aria-labelledby="tab-papers" hidden>
+      <div class="panel-head"><h2 id="practice-heading">Past Papers</h2><button type="button" class="ghost" id="close-practice">Back to dashboard</button></div>
+      <div id="pdf-drop" class="drop-zone">Drop your question PDF here
+        <label class="control-label">Or choose a PDF <input id="practice-file" type="file" accept=".pdf,application/pdf" /></label>
+      </div>
+      <p class="hint">Work through your questions, then confirm completion below. Answers are self-reported. PDFs stay in this browser; maximum file size is 20 MB.</p>
+      <p id="pdf-status" role="status"></p><p id="pdf-error" class="error" role="alert"></p>
+      <div id="pdf-workspace" hidden>
+        <a id="pdf-open" target="_blank" rel="noopener">Open PDF in a separate tab</a>
+        <section class="practice-stopwatch" aria-label="Past paper study timer">
+          <div><h3>Past paper timer</h3><output id="practice-clock" aria-label="Elapsed study time">00:00</output></div>
+          <div class="actions"><button type="button" id="practice-clock-start">Start timer</button><button type="button" id="practice-clock-reset" class="ghost">Reset</button></div>
+          <p class="hint">Start when you begin. Pause for breaks. Completed logs the measured time, rounded to minutes (minimum one).</p>
+        </section>
+        <iframe id="pdf-viewer" title="Your practice questions PDF"></iframe>
+
+<p class="hint">Select text, highlight, draw, or add text using the PDF toolbar. Save PDF edits before leaving to keep your annotations. Ask AI attaches the current page directly.</p>
+<div class="actions"><button type="button" id="paper-ai" class="ghost" disabled>Ask AI about this page</button><button type="button" id="paper-save-edits" class="ghost">Save PDF edits</button></div>
+        <button type="button" id="practice-completed">Completed</button>
+      </div>
+    </section>
+
+    <section id="notes-panel" class="panel study-panel" role="tabpanel" aria-labelledby="tab-notes" hidden>
+      <div class="panel-head"><h2>Your notes</h2><p class="hint">Keep your revision material together. Choose what to share with your study helper.</p></div>
+      <form id="notes-upload-form" class="editor-form">
+        <div class="drop-zone" id="notes-drop">Drop PDF or text notes here
+          <label class="control-label">Choose notes <input type="file" id="notes-file" accept=".pdf,.txt,.md" /></label>
+          <p id="notes-file-status" class="hint" role="status"></p>
+        </div>
+        <div class="notes-fields"><label>Title <input type="text" id="notes-title" maxlength="100" required /></label><label>Subject <input type="text" id="notes-subject" maxlength="60" placeholder="e.g. Biology" required /></label></div>
+        <button type="submit" id="notes-save">Save notes</button>
+      </form>
+      <p id="notes-status" role="status"></p><p id="notes-error" class="error" role="alert"></p>
+      <label class="control-label">Filter by subject <select id="notes-filter"><option value="">All subjects</option></select></label>
+      <div id="notes-library" class="notes-library"></div>
+      <div id="note-workspace" hidden>
+        <form id="note-edit-form" class="notes-fields"><label>Note title <input type="text" id="note-edit-title" maxlength="100" required /></label><label>Subject <input type="text" id="note-edit-subject" maxlength="60" required /></label><button type="submit" class="ghost">Save details</button></form>
+        <a id="note-open" target="_blank" rel="noopener">Open original file</a>
+        <iframe id="note-fallback" title="Your notes PDF" hidden></iframe>
+        <p class="hint">Use the toolbar to select text, highlight, draw, or add text. Save PDF edits to retain annotations. AI receives the current PDF page without screen sharing.</p>
+        
+        <div id="note-text-label" hidden><h3>Note text</h3><pre id="note-text" class="note-text-content"></pre></div>
+        <div class="actions"><button type="button" id="note-ai" class="ghost" disabled>Explain these notes</button><button type="button" id="note-save-edits" class="ghost" hidden>Save PDF edits</button><button type="button" id="note-flashcards" disabled>Create flashcards from notes</button></div>
+        <p class="hint">These buttons attach a preview to the AI chat. Nothing is sent until you press Send. AI-generated cards are saved only when you choose Save flashcards.</p>
+      </div>
+    </section>
+
+    </main>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <!-- AI Chatbot Widget HTML Elements -->
+    <button id="chatbot-toggler">
+      <span class="material-symbols-outlined">mode_comment</span>
+      <span class="material-symbols-rounded">close</span>
+    </button>
+
+    <div class="chatbot-popup">
+      <!-- Chatbot Header -->
+      <div class="chat-header">
+        <div class="header-info">
+          <img class="chatbot-logo" src="study-seeker-logo.svg" alt="" width="36" height="36" />
+          <h2 class="logo-text">Study Seeker AI</h2>
+        </div>
+        <button type="button" id="close-chatbot" aria-label="Close AI tutor">×</button>
+      </div>
+
+      <!-- Chatbot Body -->
+      <div class="chat-body">
+        <div class="message bot-message">
+          <div class="message-text">Hi! 👋<br />How can I help you study today?</div>
+        </div>
+      </div>
+
+      <!-- Chatbot Footer -->
+      <div class="chat-footer">
+        <div class="ai-context-tools"><button type="button" id="ai-use-page" class="ghost small">Use current page</button><button type="button" id="ai-new-chat" class="ghost small">New chat</button></div>
+        <div id="ai-context-preview" class="ai-context-preview" hidden>
+          <strong id="ai-context-title"></strong><p id="ai-context-text"></p><img id="ai-context-image" alt="PDF page attached for the AI" hidden />
+          <p class="hint">This snapshot goes to the AI provider with your next message.</p><button type="button" id="ai-clear-context" class="ghost small">Remove context</button>
+        </div>
+        <p id="chat-attachment-status" class="hint" role="status"></p><button type="button" id="chat-remove-image" class="ghost small" hidden>Remove image</button>
+        <p id="chat-status" class="hint" role="status"></p>
+        <form action="#" class="chat-form">
+          <textarea placeholder="Message..." class="message-input" required></textarea>
+          <div class="chat-controls">
+            <button type="button" id="emoji-picker" class="material-symbols-rounded">sentiment_satisfied</button>
+            <div class="file-upload-wrapper">
+              <input type="file" accept="image/*" id="file-input" hidden>
+              <button type="button" id="file-upload" class="material-symbols-rounded">attach_file</button>
+            </div>
+            <button type="submit" id="send-message" class="material-symbols-rounded">arrow_upward</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JavaScript Scripts -->
+        <script src="workspace.js"></script>
+    <script src="pdf-integration.js"></script>
+    <script src="materials.js"></script>
+    <script src="study.js"></script>
+    <script src="app.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,170 @@
+#separator:Tab
+#html:false
+#notetype:Basic
+#deck:Quest Log Viva
+#tags column:3
+What does Quest Log do?	It tracks staged quests, XP and levels, focus sessions, weekly study goals, monthly activity, and grace days. Data is saved in the browser.	quest_log::Overview
+What does each project file do?	index.html supplies structure; styles.css supplies appearance and layout; app.js manages state, events, storage, timers, and DOM updates.	quest_log::Overview
+What is the DOM?	The Document Object Model is the browser's tree of objects representing HTML elements and text. JavaScript changes it using DOM APIs.	quest_log::Overview
+How does the browser display the app?	It parses HTML, processes CSS, calculates styles, performs layout to determine sizes and positions, and paints. JavaScript changes can trigger further rendering work.	quest_log::Overview
+What is application state?	The data describing the app now: XP, quests, weekly target, daily records, and monthly grace usage.	quest_log::Overview
+What is the app's main update cycle?	User event → handler → state change → saveState() → render() → browser displays the result.	quest_log::Overview
+Does the app have a backend?	No backend is implemented in these files. Logic and persistence are browser-side.	quest_log::Overview
+Which state is persistent and which is temporary?	XP, quests, and habit records are saved. Timer variables and toast timeout IDs exist only in memory and disappear on reload.	quest_log::Overview
+What does <!doctype html> do?	Requests modern HTML standards mode rather than legacy quirks mode.	quest_log::HTML
+What do html, head, and body represent?	html is the document root; head contains metadata and resource links; body contains page content.	quest_log::HTML
+What does lang="en" do?	Declares English as the document language, helping assistive technology choose pronunciation.	quest_log::HTML
+What does charset="UTF-8" do?	Declares the text encoding so letters, symbols, and emoji are interpreted correctly.	quest_log::HTML
+What does the viewport meta tag do?	width=device-width uses the device width for the layout viewport; initial-scale=1.0 sets the initial zoom. This supports mobile layout.	quest_log::HTML
+What does title do?	Sets the document title shown in the browser tab and commonly used for bookmarks.	quest_log::HTML
+How does the HTML load CSS?	link uses rel="stylesheet" and href="styles.css" to identify and locate the stylesheet.	quest_log::HTML
+What is a relative path?	A location resolved relative to the document URL. styles.css and app.js are expected beside index.html.	quest_log::HTML
+What is semantic HTML?	Elements used according to meaning, such as header for introductory content, main for primary content, and form for submission controls.	quest_log::HTML
+What is the purpose of section and headings?	section groups related content; h1, h2, and h3 express heading hierarchy. The app uses them for its title, sections, and cards.	quest_log::HTML
+How do div and span differ?	Both are generic containers. div is block-level and span inline by default; CSS can change their display behavior.	quest_log::HTML
+What does strong mean?	It marks important text and is normally bold. The app uses it for changing statistics and emphasized counts.	quest_log::HTML
+How is i used here?	It contains weekday markers and colored calendar squares. These uses are mainly visual rather than semantic.	quest_log::HTML
+What is an HTML attribute?	A setting on an opening tag, such as id="xp", type="button", or required.	quest_log::HTML
+How do id and class differ?	An ID should identify one element uniquely; classes are reusable. JavaScript finds specific controls by ID and CSS styles groups by class.	quest_log::HTML
+What does class="btn ghost small" mean?	The element has three classes. btn has no dedicated CSS rule here; button provides the base style, while ghost and small modify it.	quest_log::HTML
+What is a Boolean HTML attribute?	Its presence enables a condition. Examples include hidden, required, selected, and disabled.	quest_log::HTML
+Why does hidden="false" still mark an element hidden?	Boolean attributes depend on presence, not the text value. JavaScript reveals an element with element.hidden = false.	quest_log::HTML
+What is a void element?	An element with no children or closing tag, such as input, meta, or link. The trailing slash in input markup is optional in HTML.	quest_log::HTML
+How are HTML comments written?	<!-- comment -->. They document source code and are not displayed as page content.	quest_log::HTML
+How does label associate with a control?	Its for attribute can match the control's ID, or the control can be nested inside the label. Clicking the label can focus or activate the control.	quest_log::HTML
+What does aria-label do?	Supplies an accessible name. The target select is named Study days per week.	quest_log::HTML
+How do select, option, value, and selected work together?	select provides a menu; option supplies choices; value supplies each choice's data; selected establishes the initial choice, which JavaScript can later override.	quest_log::HTML
+Why convert targetSelect.value with Number()?	Form control values are strings. Number() converts the selected digits to a number for calculations.	quest_log::HTML
+How do button and submit types differ?	type="button" performs ordinary scripted actions; type="submit" submits its form. Explicit types prevent accidental submission.	quest_log::HTML
+What do required, maxlength, and placeholder do?	required activates empty-field validation; maxlength limits normal text entry; placeholder displays an example while empty, without becoming the value.	quest_log::HTML
+Why use a form to add quests?	It supports native validation and Enter-key submission. JavaScript intercepts submit to add a quest without navigating.	quest_log::HTML
+Why are several HTML containers empty initially?	active-list, done-list, week-chips, and heatmap receive child elements generated from JavaScript state.	quest_log::HTML
+Why load app.js at the end of body?	Earlier elements have already been parsed, so the script can find them immediately without waiting for DOMContentLoaded.	quest_log::HTML
+What is the difference between const and let?	const prevents reassignment of its binding; let permits reassignment. Both are block-scoped.	quest_log::JavaScript_Syntax
+Does const make an object immutable?	No. const rec = { minutes: 0 } permits rec.minutes = 25, but prevents assigning rec to another object.	quest_log::JavaScript_Syntax
+What is block scope?	A let or const variable is accessible inside its enclosing block and nested blocks, subject to declaration and initialization rules.	quest_log::JavaScript_Syntax
+Which value types does the app use?	Strings for titles and IDs, numbers for XP and minutes, Booleans for flags, null for explicit absence, and objects and arrays for structured data.	quest_log::JavaScript_Syntax
+How do null and undefined differ?	null explicitly represents absence. undefined commonly comes from missing properties, unsuccessful find(), or a function without a returned value.	quest_log::JavaScript_Syntax
+What is an object?	A collection of named properties, such as { title: "Study", status: "active" }.	quest_log::JavaScript_Syntax
+What is an array?	An ordered collection indexed from zero. state.quests contains quest objects, and names[0] reads the first stage name.	quest_log::JavaScript_Syntax
+How do dot and bracket notation differ?	quest.title uses a fixed property name. rec[habitFlag] uses the value of a variable as the name; if habitFlag is "review", it accesses rec.review.	quest_log::JavaScript_Syntax
+What does { name } mean?	Object property shorthand for { name: name }.	quest_log::JavaScript_Syntax
+What can braces mean in JavaScript?	An object literal, such as { done: false }, or a statement block, such as an if or function body. Context determines meaning.	quest_log::JavaScript_Syntax
+How do parameters and arguments differ?	Parameters are names in a function definition. Arguments are actual values passed in a call.	quest_log::JavaScript_Syntax
+What does return do?	Ends the current function and optionally supplies a result. return; produces undefined.	quest_log::JavaScript_Syntax
+What is an arrow function?	A compact function expression using =>. s => s.done returns the done property of its argument.	quest_log::JavaScript_Syntax
+How do arrow function returns work?	An expression body returns implicitly. A block body needs an explicit return to supply a value.	quest_log::JavaScript_Syntax
+Why wrap an object in parentheses in an arrow return?	(name, i) => ({ id: i, name }) treats braces as an object expression rather than a function body.	quest_log::JavaScript_Syntax
+What is a callback?	A function supplied to another function or API for execution, such as an event handler, timer callback, or map callback.	quest_log::JavaScript_Syntax
+What is a closure?	A function retaining access to its surrounding lexical scope. () => useGraceDay(key) remembers the date key for its chip.	quest_log::JavaScript_Syntax
+How do startTimer and startTimer() differ?	startTimer refers to the function; startTimer() executes it and produces its return value. Listeners need a function reference or wrapper.	quest_log::JavaScript_Syntax
+How do =, ===, and !== differ?	= assigns; === tests strict equality without coercion; !== tests strict inequality. "5" === 5 is false.	quest_log::JavaScript_Syntax
+What do += and ++ do?	x += n adds n and stores the result; x++ increments by one. They update XP, minutes, and counts.	quest_log::JavaScript_Syntax
+What does % do?	Gives the remainder after division. totalSec % 60 obtains seconds remaining after full minutes.	quest_log::JavaScript_Syntax
+What do ! and !! do?	! logically negates; !! converts a value to Boolean. stage.done = !stage.done flips a completion flag.	quest_log::JavaScript_Syntax
+What values are falsy?	false, 0, empty string, null, undefined, and NaN are examples. Empty arrays and objects are truthy.	quest_log::JavaScript_Syntax
+How do logical AND and OR work?	AND stops at a falsy operand; OR stops at a truthy operand. They return operand values rather than necessarily Booleans. This enables safe checks and fallback values.	quest_log::JavaScript_Syntax
+What is short-circuit evaluation?	Skipping further evaluation when the result is determined. rec && rec.focus avoids accessing focus when rec is null.	quest_log::JavaScript_Syntax
+What is the ternary operator?	condition ? a : b chooses a if truthy and b otherwise, producing a value.	quest_log::JavaScript_Syntax
+What does typeof do?	Returns a type-name string. Arrays also report "object", so use Array.isArray() to identify arrays.	quest_log::JavaScript_Syntax
+What does unary + do to a Date?	Converts it to a numeric timestamp. +d === +today compares exact instants, not calendar dates.	quest_log::JavaScript_Syntax
+What is a template literal?	A backtick-delimited string with interpolation using ${expression}, such as `${minutes} min logged`.	quest_log::JavaScript_Syntax
+What do trim(), toLowerCase(), and includes() do?	trim removes surrounding whitespace; toLowerCase returns lowercase text; includes checks a substring. They do not understand linguistic meaning.	quest_log::JavaScript_Syntax
+What do slice(0, 7) and padStart(2, "0") do?	slice extracts indexes 0 through 6; padStart adds leading zeroes until at least two characters. They build month keys and padded dates.	quest_log::JavaScript_Syntax
+What do String() and Number() do?	Convert values to text and numbers respectively. Number() can produce NaN if conversion fails.	quest_log::JavaScript_Syntax
+How do if, else if, and else work?	They choose branches by conditions; the first satisfied branch runs. else handles remaining cases.	quest_log::JavaScript_Syntax
+What is a guard clause?	An early return that rejects an invalid situation before the main work, such as if (!quest) return.	quest_log::JavaScript_Syntax
+How do for...of and a counter-based for loop differ?	for...of visits collection values; a counter loop initializes, tests, and increments an index to control iterations.	quest_log::JavaScript_Syntax
+How do break and continue differ?	break exits a loop; continue skips the remaining current iteration and proceeds to the next.	quest_log::JavaScript_Syntax
+What do try and catch do?	try contains code that may throw; catch handles the exception. loadState uses this to recover from storage or JSON errors.	quest_log::JavaScript_Syntax
+What does map() do?	Returns a new array of transformed items. active.map(renderQuest) creates one article per active quest.	quest_log::JavaScript_Syntax
+What does filter() do?	Returns a new array of items passing a callback test. It separates quest statuses and removes selected quests.	quest_log::JavaScript_Syntax
+What does find() do?	Returns the first matching item or undefined. It locates quests and stages by ID.	quest_log::JavaScript_Syntax
+What does every() do?	Tests whether all items pass. allStagesDone uses it; an empty array also returns true.	quest_log::JavaScript_Syntax
+What do forEach() and unshift() do?	forEach executes a callback per item and returns undefined; unshift mutates an array by inserting at the beginning.	quest_log::JavaScript_Syntax
+What does Array.from({ length: 7 }, (_, i) => ...) do?	Creates seven items with indexes 0–6. The underscore is an ordinary name indicating an unused parameter.	quest_log::JavaScript_Syntax
+How does spread syntax work in objects and calls?	{ ...rec, grace: false } copies and overrides properties. replaceChildren(...chips) expands an array into individual arguments.	quest_log::JavaScript_Syntax
+How are JavaScript comments written?	// is a line comment; /* ... */ can span lines; /** ... */ is documentation-style but remains a comment.	quest_log::JavaScript_Syntax
+What does getElementById() return?	The matching DOM element or null. Renaming an HTML ID without updating JavaScript can cause property access errors.	quest_log::DOM_Events_Storage
+What does createElement() do?	Creates a detached element in memory; inserting it into the document makes it part of the page.	quest_log::DOM_Events_Storage
+What does querySelector() do?	Returns the first matching element in the searched scope. card.querySelector searches descendants within that card.	quest_log::DOM_Events_Storage
+What does textContent do, and why use it for titles?	Sets text without parsing HTML. User titles are displayed literally, avoiding HTML injection through that assignment.	quest_log::DOM_Events_Storage
+How do className and classList differ?	className replaces the class string. classList allows individual additions and removals without replacing other classes.	quest_log::DOM_Events_Storage
+What does classList.toggle("is-done", done) do?	Forces the class present when done is true and absent when false.	quest_log::DOM_Events_Storage
+How do appendChild() and replaceChildren() differ?	appendChild adds or moves a node to the end; replaceChildren replaces all existing children with supplied nodes or text.	quest_log::DOM_Events_Storage
+What do setAttribute() and element.style.width do?	setAttribute changes a named HTML attribute; style.width assigns inline CSS, normally overriding ordinary stylesheet width declarations.	quest_log::DOM_Events_Storage
+What do value, hidden, disabled, and checked represent?	Current control value, hidden state, disabled state, and current checkbox selection. JavaScript changes these DOM properties to update the UI.	quest_log::DOM_Events_Storage
+How do the checked attribute and property differ?	The attribute describes initial checked state; the checked property reflects current state. Generated checkboxes receive their current state from saved data.	quest_log::DOM_Events_Storage
+What is an event listener?	A callback registered to execute when the browser dispatches an event, such as click, change, or submit.	quest_log::DOM_Events_Storage
+What does preventDefault() do in the form handler?	Cancels default form submission and navigation, allowing a local state update instead.	quest_log::DOM_Events_Storage
+What is localStorage?	Browser string key-value storage associated with an origin and generally retained across reloads. It does not automatically synchronize across devices.	quest_log::DOM_Events_Storage
+What is an origin?	For ordinary web URLs, the combination of scheme, hostname, and port. Storage is separated by origin.	quest_log::DOM_Events_Storage
+Why use JSON.stringify() and JSON.parse()?	stringify converts state into text for storage; parse reconstructs data. Invalid JSON throws an exception.	quest_log::DOM_Events_Storage
+Are localStorage operations asynchronous?	No, they are synchronous. The current execution waits for them to complete.	quest_log::DOM_Events_Storage
+What does emptyState() create?	A fresh state object with zero XP, no quests, a target of five, and empty daily-record and monthly-grace maps.	quest_log::Application_Logic
+Why create fresh default objects?	To avoid accidentally sharing mutable arrays or objects between separate default-state instances.	quest_log::Application_Logic
+How does loadState() recover from failures?	It returns defaults for absent data, invalid top-level quests data, or exceptions during storage access and parsing.	quest_log::Application_Logic
+Does loadState() fully validate saved data?	No. It does not thoroughly validate quest stages, numeric XP, target range, or day records. Malformed data can pass initial checks.	quest_log::Application_Logic
+What risk exists in saveState()?	It lacks exception handling. A failed storage write can interrupt the handler after in-memory mutation and before rendering.	quest_log::Application_Logic
+How is the level calculated?	Math.floor(xp / 50) + 1. Levels increase every fifty total XP, starting at level one.	quest_log::Application_Logic
+How does dayKey() identify a day?	Uses local year, month plus one, and day, padded into YYYY-MM-DD. Local getters avoid confusing the local day with a UTC date.	quest_log::Application_Logic
+How does startOfWeek() calculate Monday?	Copies the date at midnight, converts Sunday-first weekday numbering with (getDay() + 6) % 7, and subtracts the offset.	quest_log::Application_Logic
+Why copy dates and use setDate()?	Dates are mutable; copies protect inputs. setDate performs calendar arithmetic with month/year overflow rather than assuming every day is exactly 24 hours.	quest_log::Application_Logic
+What does ensureDay() create?	A stored day record with minutes: 0 and false focus, review, practice, and grace flags, then returns that mutable record.	quest_log::Application_Logic
+What makes a day active?	Any activity flag, grace flag, or positive minutes. Several sessions still count as one active day.	quest_log::Application_Logic
+What does logActivity() do?	Adds credited minutes, marks the habit flag, adds ten XP, saves, renders, and shows a toast. It returns whether the flag was newly completed.	quest_log::Application_Logic
+Does logActivity() award XP only once daily?	No. Every call awards ten XP; firstTime only controls first completion marking and notification wording.	quest_log::Application_Logic
+How do grace days affect rewards?	They count as active days toward the weekly goal, but add neither study minutes nor XP.	quest_log::Application_Logic
+Which month is charged for a grace day?	The month of the selected date, not necessarily the current month. Each month permits two.	quest_log::Application_Logic
+What issue arises from parsing grace dates at noon?	Today's noon is in the future before noon and in the past afterward, so eligibility depends on the time if today is mistakenly offered as missed.	quest_log::Application_Logic
+How does startTimer() work?	Rejects an already-running timer, stores Date.now() plus twenty-five minutes in milliseconds, updates controls, and schedules 250-millisecond UI updates.	quest_log::Application_Logic
+Why use a finish timestamp?	Browser interval callbacks may be delayed. Subtracting current time from the intended finish time avoids accumulating counter drift.	quest_log::Application_Logic
+What is the event loop's relevance to timers?	Callbacks run when scheduling and current execution allow. Requested delays are not exact guarantees, especially in background tabs.	quest_log::Application_Logic
+How is the countdown formatted?	Remaining milliseconds are rounded upward to seconds; floor(seconds / 60) gives minutes, remainder modulo sixty gives seconds, and padding gives MM:SS.	quest_log::Application_Logic
+How do cancellation and completion differ?	Cancellation clears the timer without rewards. Completion clears it and records twenty-five focus minutes plus ten XP.	quest_log::Application_Logic
+What happens if a session crosses midnight or the page reloads?	Completion is credited to its finish date. Reloading loses an unfinished timer because it is not persisted.	quest_log::Application_Logic
+Do review and practice buttons contain actual exercises?	No. Each immediately credits ten minutes and ten XP, without showing flashcards/questions or verifying completion.	quest_log::Application_Logic
+Which actions can repeat daily?	Focus can repeat and earns rewards per finished session. Review and practice are disabled by the UI after their first daily completion.	quest_log::Application_Logic
+How does goalStats() count progress?	It visits the current Monday-first week up to today and counts active day records, not total sessions.	quest_log::Application_Logic
+How is the progress bar percentage calculated?	Rounded done/target × 100, capped at 100. The displayed completed-day count can exceed the target.	quest_log::Application_Logic
+How does renderGoal() build weekday chips?	Maps dates to detached buttons or spans, assigns state classes and markers, attaches grace callbacks, then inserts all chips with replaceChildren.	quest_log::Application_Logic
+What is the today bug in renderGoal()?	Week dates are midnight while today includes the current time, so an inactive current date usually enters the missed branch. Exact timestamp equality does not identify the calendar day.	quest_log::Application_Logic
+How could the today bug be fixed?	Normalize both values to local midnight or compare dayKey values consistently for calendar-day equality and ordering.	quest_log::Application_Logic
+How do minutes map to heatmap intensity?	Zero or fewer: l0; 1–24: l1; 25–49: l2; 50–74: l3; 75 or more: l4. CSS determines colors.	quest_log::Application_Logic
+How is the month's length found?	new Date(year, month + 1, 0).getDate() requests day zero of next month, meaning the final day of the current month.	quest_log::Application_Logic
+Why does the calendar add blank cells?	To align the first day to its weekday and complete the final week. Hidden visibility preserves their grid positions.	quest_log::Application_Logic
+How is totalCells calculated?	Ceiling of (leading offset + days in month) / 7, multiplied by 7, creates complete week columns.	quest_log::Application_Logic
+How does the monthly summary format duration?	Totals minutes, divides downward by sixty for hours, and uses remainder for leftover minutes.	quest_log::Application_Logic
+What limitation affects a grace-only monthly summary?	Active days may exist but minutes remain zero; the summary condition therefore reports no sessions logged. Grace tooltips also say no study.	quest_log::Application_Logic
+How does renderActions() communicate completion?	Toggles is-done, switches explanatory/completed paragraphs, disables review/practice, and restores timer controls when no timer runs.	quest_log::Application_Logic
+How does makeStages() select stages?	Lowercases the title and checks study, cleaning, then exercise substrings; otherwise uses generic stages. First matching category wins.	quest_log::Application_Logic
+What limitations affect keyword stage generation?	Substring checks do not understand meaning or word boundaries. Words can match inside unrelated words and category order affects results.	quest_log::Application_Logic
+How are quest IDs generated, and what is the risk?	Date.now().toString() gives a timestamp string. Two creations in one millisecond can collide.	quest_log::Application_Logic
+What does the submit handler do in order?	Prevent submission, trim/check title, prepend a new quest, clear input, save state, render.	quest_log::Application_Logic
+What does toggleStage() do?	Finds an active quest and matching stage, flips done, saves, and renders. It rejects missing records and completed quests.	quest_log::Application_Logic
+What does completeQuest() check and change?	Verifies active status and all completed stages, changes status to done, adds thirty XP, saves, and renders.	quest_log::Application_Logic
+Why validate completion when the button is already disabled?	UI restrictions are not sufficient validation. Function-level guards protect the data operation and prevent repeated completion rewards.	quest_log::Application_Logic
+Does the final stage automatically complete a quest?	No. It enables Complete; the user must click that button to receive XP and move the quest to Completed.	quest_log::Application_Logic
+Does quest completion update study activity?	No. It changes status and XP without logging habit minutes or updating a day record.	quest_log::Application_Logic
+How does deleteQuest() work?	Replaces the quests array with a filtered array excluding the chosen ID, saves, and renders. Only active cards display Delete, but the function itself has no status restriction.	quest_log::Application_Logic
+How does renderQuest() create a card?	Creates an article and heading, labeled stage checkboxes, and either active action buttons or a completion badge; returns the detached article.	quest_log::Application_Logic
+Why disable completed stage checkboxes?	Completed quests are final in the UI. toggleStage also rejects completed quests, enforcing the restriction in logic.	quest_log::Application_Logic
+Why is the hardcoded +30 XP label a maintenance issue?	If XP_PER_QUEST changes, the label can become inaccurate. Deriving it from the constant keeps display and reward consistent.	quest_log::Application_Logic
+What does render() update?	XP and level, weekly goal, action cards, heatmap, both quest lists, and empty-state message visibility.	quest_log::Application_Logic
+What is the cost of rebuilding quest lists?	New nodes and listeners are created on each render. It is simple for a small app but can lose focus when the active control is replaced.	quest_log::Application_Logic
+Does the interface refresh automatically at midnight?	No dedicated refresh exists. Daily information can stay stale until another action triggers rendering or the page reloads.	quest_log::Application_Logic
+Why can earlier-declared functions reference state initialized later?	Their bodies execute after state initialization. Declaring a function does not immediately execute it.	quest_log::Application_Logic
+What does the final render() call do?	Populates the initial interface from loaded state after DOM references and listeners are ready.	quest_log::Application_Logic
+How does showToast() protect newer messages?	Clears the earlier hide timeout before scheduling a new one, restarting the visible period for the newest message.	quest_log::Application_Logic
+How does CSS style elements created later by JavaScript?	Rules match the current DOM, including dynamically inserted nodes. Generated quest, stage, badge, and chip classes receive existing styles.	quest_log::CSS_Connections_Viva
+Why can hidden fail for the goal badge?	An author display: inline-block rule can override default hidden styling. An explicit .goal-badge[hidden] display: none rule would enforce it.	quest_log::CSS_Connections_Viva
+How is the toast centered and layered?	Fixed positioning anchors it to the viewport; left: 50% plus translateX(-50%) centers it; z-index and shadow place it visually above content.	quest_log::CSS_Connections_Viva
+Why use labels around stage checkboxes?	They associate text with controls, enlarge the clickable area, and provide accessible names.	quest_log::CSS_Connections_Viva
+What accessibility limitations exist?	Progress lacks progress semantics, heatmap details rely on hover titles, toast changes lack a live region, and DOM replacement can disrupt keyboard focus.	quest_log::CSS_Connections_Viva
+What persistence limitations exist?	Storage is browser-local, can be cleared, has no device synchronization, receives partial validation, and does not preserve timers.	quest_log::CSS_Connections_Viva
+Which improvements most affect correctness?	Fix calendar-day comparisons, enforce hidden badge styling, validate loaded data, handle storage failures, and refresh daily state after date changes.	quest_log::CSS_Connections_Viva
+How could review/practice labels match functionality better?	Implement real exercises and record verified completion, or rename the buttons to indicate self-reported activity logging.	quest_log::CSS_Connections_Viva
+How would you explain the architecture in a viva?	A client-side, event-driven application with structured state, local persistence, and explicit render functions. HTML supplies containers, JavaScript manages behavior, and CSS styles the resulting DOM.	quest_log::CSS_Connections_Viva
+Trace adding and completing Study maths across the files.	The form collects text; JavaScript generates study stages and saves the quest; renderQuest builds controls; CSS styles them; change events update stages; Complete awards XP and render moves the card.	quest_log::CSS_Connections_Viva
+Why discuss actual behavior rather than just UI wording?	Code determines behavior. Explaining immediate credits, date issues, and persistence limits demonstrates implementation understanding.	quest_log::CSS_Connections_Viva
+How should you answer a viva execution question?	Name the trigger, identify the handler, explain the state mutation, describe persistence, then explain DOM changes and the visible result.	quest_log::CSS_Connections_Viva
