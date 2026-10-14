@@ -14,7 +14,7 @@ Open http://localhost:8000/index.html. The PDF reader needs HTTP hosting rather 
 
 ## AI setup
 
-The uploaded source intentionally contains no API key. AI chat requires local configuration and internet access. Do not publish a credential in frontend JavaScript; public deployments should use a server-side proxy.
+This private repository includes the locally configured AI credential. AI chat requires internet access. Keep the repository private. Before public hosting or sharing the source, remove the frontend credential and use a server-side proxy.
 
 ## PDF viewer
 
